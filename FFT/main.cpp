@@ -7,16 +7,19 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include <math.h>
 #include "complex.h"
 #include "round.h"
 
-const double N = 64;
+const double N = 8;
 int n1 = 10;
-int n2 = 8;
+int n2 = 12;
 int n3 = 16;
+
+double dev1;
 
 complex X[(int)N][(int)N];
 complex Y[(int)N][(int)N];
@@ -33,10 +36,10 @@ void fill()
             oldi = i;
         for(int j = 0; j < N; j++)
         {
-            if(((j% 8) == (oldi%8)) || ((j % 8) == (oldi%8 + 1)))
-                X[i][j] = *new complex(0.777);
+            if(((i % 8 == 5) || (i % 8 == 4)) && ((j%8 == 5) || (j%8 == 4)))
+                X[i][j] = *new complex(1);
             else
-                X[i][j] = *new complex(-0.777);
+                X[i][j] = *new complex(0);
         }
     }
     
@@ -47,10 +50,10 @@ void fill()
             oldi = i;
         for(int j = 0; j < N; j++)
         {
-            if(((j% 8) == (oldi%8)) || ((j % 8) == (oldi%8 + 1)))
+            if(((i % 8 == 5) || (i % 8 == 4)) && ((j%8 == 5) || (j%8 == 4)))
                 X1[i][j] = *new complex(roundc::rounded(1,n1));
             else
-                X1[i][j] = *new complex(roundc::rounded(-1,n1));
+                X1[i][j] = *new complex(roundc::rounded(0,n1));
         }
     }
 }
@@ -69,6 +72,20 @@ complex DFTfloat(int r, int k)
     return part_n*res;
 }
 
+complex DFTfloat2(int r, int k)
+{
+    int n = 0;
+    complex res;
+    for(n = 0; n < N - 1; n++)
+    {
+        complex tmp(cos(-2*M_PI*n*k/N), sin(-2*M_PI*n*k/N));
+        tmp = tmp*X[n][r];
+        res = res+tmp;
+    }
+    complex part_n(1/N);
+    return part_n*res;
+}
+
 complex DFT(int r, int k)
 {
     int n = 0;
@@ -77,6 +94,29 @@ complex DFT(int r, int k)
     {
         complex tmp(roundc::rounded(cos(-2*M_PI*n*k/N),n2), roundc::rounded(sin(-2*M_PI*n*k/N),n2));
         tmp = tmp*X1[r][n];
+        tmp.set_re(roundc::rounded(tmp.get_re(),n3));
+        tmp.set_re(roundc::rounded(tmp.get_re(),n3));
+        res = res+tmp;
+        res.set_re(roundc::rounded(res.get_re(),n3));
+        res.set_re(roundc::rounded(res.get_re(),n3));
+    }
+    complex part_n(1/N);
+    part_n.set_re(roundc::rounded(part_n.get_re(),n3));
+    part_n.set_re(roundc::rounded(part_n.get_re(),n3));
+    complex final = part_n*res;
+    final.set_re(roundc::rounded(final.get_re(),n3));
+    final.set_re(roundc::rounded(final.get_re(),n3));
+    return final;
+}
+
+complex DFT2(int r, int k)
+{
+    int n = 0;
+    complex res;
+    for(n = 0; n < N - 1; n++)
+    {
+        complex tmp(roundc::rounded(cos(-2*M_PI*n*k/N),n2), roundc::rounded(sin(-2*M_PI*n*k/N),n2));
+        tmp = tmp*X1[n][r];
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
         res = res+tmp;
@@ -161,12 +201,20 @@ int main(int argc, const char * argv[])
             Y[i][j] = DFTfloat(i, j);
         }
     }
+
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            X[i][j] = Y[i][j];
+        }
+    }
     
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
         {
-            Y[j][i] = DFTfloat(j, i);
+            Y[j][i] = DFTfloat2(i, j);
         }
     }
     
@@ -182,15 +230,36 @@ int main(int argc, const char * argv[])
     {
         for(int j = 0; j < N; j++)
         {
-            Y1[j][i] = DFT(j, i);
+            X1[i][j] = Y1[i][j];
         }
     }
+    
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            Y1[j][i] = DFT2(i, j);
+        }
+    }
+    
+    dev1 = 0;
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < N; j++)
+        {
+            dev1 += (Y[i][j].get_re() - Y1[i][j].get_re())*(Y[i][j].get_re() - Y1[i][j].get_re());
+        }
+    }
+    
+    dev1 /= N;
     
     std::cout << "Dest matrix Y: " << std::endl;
     print_matrix_y();
     
     std::cout << "Dest matrix Y1: " << std::endl;
     print_matrix_y1();
+    
+    std::cout << "Dev: " << std::setprecision( 15 ) << sqrt(dev1) << std::endl;
     
     return 0;
 }

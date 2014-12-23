@@ -47,7 +47,7 @@
 		33E18E821A48A7E000DC44CD = {
 			isa = PBXGroup;
 			children = (
-				33E18E8D1A48A7E000DC44CD /* FFT */,
+				33E18E8D1A48A7E000DC44CD /* DFT */,
 				33E18E8C1A48A7E000DC44CD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,7 +60,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		33E18E8D1A48A7E000DC44CD /* FFT */ = {
+		33E18E8D1A48A7E000DC44CD /* DFT */ = {
 			isa = PBXGroup;
 			children = (
 				33E18E8E1A48A7E000DC44CD /* main.cpp */,
@@ -69,6 +69,7 @@
 				33E18E9C1A48D67F00DC44CD /* round.cpp */,
 				33E18E9D1A48D67F00DC44CD /* round.h */,
 			);
+			name = DFT;
 			path = FFT;
 			sourceTree = "<group>";
 		};
@@ -246,6 +247,7 @@
 				33E18E941A48A7E000DC44CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
