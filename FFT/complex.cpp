@@ -59,5 +59,4 @@ void complex::print_re()
 {
     std::cout << std::fixed << std::setprecision( 5 )
               << std::setfill( '0' ) << this->get_re() << " ";
-    //std::cout << this->get_re();
 }

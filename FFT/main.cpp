@@ -7,14 +7,15 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <math.h>
 #include "complex.h"
 #include "round.h"
 
-const double N = 8;
+const double N = 64;
 int n1 = 10;
-int n2 = 12;
+int n2 = 8;
 int n3 = 16;
 
 complex X[(int)N][(int)N];
@@ -33,9 +34,9 @@ void fill()
         for(int j = 0; j < N; j++)
         {
             if(((j% 8) == (oldi%8)) || ((j % 8) == (oldi%8 + 1)))
-                X[i][j] = *new complex(1);
+                X[i][j] = *new complex(0.777);
             else
-                X[i][j] = *new complex(-1);
+                X[i][j] = *new complex(-0.777);
         }
     }
     
@@ -47,14 +48,14 @@ void fill()
         for(int j = 0; j < N; j++)
         {
             if(((j% 8) == (oldi%8)) || ((j % 8) == (oldi%8 + 1)))
-                X1[i][j] = *new complex(roundc::rounddef(1,n1));
+                X1[i][j] = *new complex(roundc::rounded(1,n1));
             else
-                X1[i][j] = *new complex(roundc::rounddef(-1,n1));
+                X1[i][j] = *new complex(roundc::rounded(-1,n1));
         }
     }
 }
 
-complex FFTfloat(int r, int k)
+complex DFTfloat(int r, int k)
 {
     int n = 0;
     complex res;
@@ -68,26 +69,26 @@ complex FFTfloat(int r, int k)
     return part_n*res;
 }
 
-complex FFT(int r, int k)
+complex DFT(int r, int k)
 {
     int n = 0;
     complex res;
     for(n = 0; n < N - 1; n++)
     {
-        complex tmp(roundc::rounddef(cos(-2*M_PI*n*k/N),n2), roundc::rounddef(sin(-2*M_PI*n*k/N),n2));
+        complex tmp(roundc::rounded(cos(-2*M_PI*n*k/N),n2), roundc::rounded(sin(-2*M_PI*n*k/N),n2));
         tmp = tmp*X1[r][n];
-        tmp.set_re(roundc::rounddef(tmp.get_re(),n3));
-        tmp.set_re(roundc::rounddef(tmp.get_re(),n3));
+        tmp.set_re(roundc::rounded(tmp.get_re(),n3));
+        tmp.set_re(roundc::rounded(tmp.get_re(),n3));
         res = res+tmp;
-        res.set_re(roundc::rounddef(res.get_re(),n3));
-        res.set_re(roundc::rounddef(res.get_re(),n3));
+        res.set_re(roundc::rounded(res.get_re(),n3));
+        res.set_re(roundc::rounded(res.get_re(),n3));
     }
     complex part_n(1/N);
-    part_n.set_re(roundc::rounddef(part_n.get_re(),n3));
-    part_n.set_re(roundc::rounddef(part_n.get_re(),n3));
+    part_n.set_re(roundc::rounded(part_n.get_re(),n3));
+    part_n.set_re(roundc::rounded(part_n.get_re(),n3));
     complex final = part_n*res;
-    final.set_re(roundc::rounddef(final.get_re(),n3));
-    final.set_re(roundc::rounddef(final.get_re(),n3));
+    final.set_re(roundc::rounded(final.get_re(),n3));
+    final.set_re(roundc::rounded(final.get_re(),n3));
     return final;
 }
 
@@ -129,14 +130,18 @@ void print_matrix_y()
 
 void print_matrix_y1()
 {
+    std::ofstream myfile;
+    myfile.open ("out.csv");
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
         {
             Y1[i][j].print_re();
+            myfile << Y1[i][j].get_re() << "; " << Y[i][j].get_re() << std::endl;
         }
         std::cout << std::endl << "===================" << std::endl;
     }
+    myfile.close();
 }
 
 int main(int argc, const char * argv[])
@@ -153,7 +158,7 @@ int main(int argc, const char * argv[])
     {
         for(int j = 0; j < N; j++)
         {
-            Y[i][j] = FFTfloat(i, j);
+            Y[i][j] = DFTfloat(i, j);
         }
     }
     
@@ -161,7 +166,7 @@ int main(int argc, const char * argv[])
     {
         for(int j = 0; j < N; j++)
         {
-            Y[j][i] = FFTfloat(j, i);
+            Y[j][i] = DFTfloat(j, i);
         }
     }
     
@@ -169,7 +174,7 @@ int main(int argc, const char * argv[])
     {
         for(int j = 0; j < N; j++)
         {
-            Y1[i][j] = FFT(i, j);
+            Y1[i][j] = DFT(i, j);
         }
     }
     
@@ -177,7 +182,7 @@ int main(int argc, const char * argv[])
     {
         for(int j = 0; j < N; j++)
         {
-            Y1[j][i] = FFT(j, i);
+            Y1[j][i] = DFT(j, i);
         }
     }
     
