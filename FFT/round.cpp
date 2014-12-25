@@ -10,13 +10,13 @@
 #include <math.h>
 #include <tgmath.h>
 
-double roundc::rounddef(double value, int power)
+double roundc::rounddef(const double & value, const int & power)
 {
     double res = (long)(value*pow(2,power));
     return res/pow(2,power);
 }
 
-double roundc::roundinc(double value, int power)
+double roundc::roundinc(const double & value, const int & power)
 {
     double res = (long)(value*pow(2,power));
     long tmp = (long)res % 10;
@@ -32,7 +32,7 @@ double roundc::roundinc(double value, int power)
     return res/pow(2,power);
 }
 
-double roundc::rounded(double value, int power)
+double roundc::rounded(const double & value, const int & power)
 {
     return (round(value*pow(2,power)))/pow(2,power);
 }

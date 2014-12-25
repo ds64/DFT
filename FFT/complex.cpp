@@ -14,12 +14,12 @@ complex::complex(): Re(0.0),
 {
 }
 
-complex::complex(double r): Im(0.0)
+complex::complex(const double & r): Im(0.0)
 {
     Re = r;
 }
 
-complex::complex(double r, double i)
+complex::complex(const double & r, const double & i)
 {
     Re = r;
     Im = i;
@@ -39,12 +39,12 @@ double complex::get_im()
     return Im;
 }
 
-void complex::set_re(double re)
+void complex::set_re(const double & re)
 {
     Re = re;
 }
 
-void complex::set_im(double im)
+void complex::set_im(const double & im)
 {
     Im = im;
 }

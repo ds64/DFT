@@ -14,9 +14,9 @@
 class roundc
 {
 public:
-    static double rounddef(double value, int power);
-    static double roundinc(double value, int power);
-    static double rounded(double value, int power);
+    static double rounddef(const double & value, const int & power);
+    static double roundinc(const double & value, const int & power);
+    static double rounded(const double & value, const int & power);
 };
 
 #endif /* defined(__FFT__round__) */

@@ -14,7 +14,7 @@
 #include "complex.h"
 #include "round.h"
 
-const double N = 8;
+const double N = 128;
 int n1 = 10;
 int n2 = 12;
 int n3 = 16;
@@ -58,75 +58,75 @@ void fill()
     }
 }
 
-complex DFTfloat(int r, int k)
+complex DFTfloat(const int & r, const int & k)
 {
     int n = 0;
     complex res;
     for(n = 0; n < N - 1; n++)
     {
         complex tmp(cos(-2*M_PI*n*k/N), sin(-2*M_PI*n*k/N));
-        tmp = tmp*X[r][n];
-        res = res+tmp;
+        tmp = tmp*&X[r][n];
+        res = res+&tmp;
     }
     complex part_n(1/N);
-    return part_n*res;
+    return part_n*&res;
 }
 
-complex DFTfloat2(int r, int k)
+complex DFTfloat2(const int & r, const int & k)
 {
     int n = 0;
     complex res;
     for(n = 0; n < N - 1; n++)
     {
         complex tmp(cos(-2*M_PI*n*k/N), sin(-2*M_PI*n*k/N));
-        tmp = tmp*X[n][r];
-        res = res+tmp;
+        tmp = tmp*&X[n][r];
+        res = res+&tmp;
     }
     complex part_n(1/N);
-    return part_n*res;
+    return part_n*&res;
 }
 
-complex DFT(int r, int k)
+complex DFT(const int & r, const int & k)
 {
     int n = 0;
     complex res;
     for(n = 0; n < N - 1; n++)
     {
         complex tmp(roundc::rounded(cos(-2*M_PI*n*k/N),n2), roundc::rounded(sin(-2*M_PI*n*k/N),n2));
-        tmp = tmp*X1[r][n];
+        tmp = tmp*&X1[r][n];
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
-        res = res+tmp;
+        res = res+&tmp;
         res.set_re(roundc::rounded(res.get_re(),n3));
         res.set_re(roundc::rounded(res.get_re(),n3));
     }
     complex part_n(1/N);
     part_n.set_re(roundc::rounded(part_n.get_re(),n3));
     part_n.set_re(roundc::rounded(part_n.get_re(),n3));
-    complex final = part_n*res;
+    complex final = part_n*&res;
     final.set_re(roundc::rounded(final.get_re(),n3));
     final.set_re(roundc::rounded(final.get_re(),n3));
     return final;
 }
 
-complex DFT2(int r, int k)
+complex DFT2(const int & r, const int & k)
 {
     int n = 0;
     complex res;
     for(n = 0; n < N - 1; n++)
     {
         complex tmp(roundc::rounded(cos(-2*M_PI*n*k/N),n2), roundc::rounded(sin(-2*M_PI*n*k/N),n2));
-        tmp = tmp*X1[n][r];
+        tmp = tmp*&X1[n][r];
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
         tmp.set_re(roundc::rounded(tmp.get_re(),n3));
-        res = res+tmp;
+        res = res+&tmp;
         res.set_re(roundc::rounded(res.get_re(),n3));
         res.set_re(roundc::rounded(res.get_re(),n3));
     }
     complex part_n(1/N);
     part_n.set_re(roundc::rounded(part_n.get_re(),n3));
     part_n.set_re(roundc::rounded(part_n.get_re(),n3));
-    complex final = part_n*res;
+    complex final = part_n*&res;
     final.set_re(roundc::rounded(final.get_re(),n3));
     final.set_re(roundc::rounded(final.get_re(),n3));
     return final;
